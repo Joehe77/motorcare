@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MotorCare - Pengingat Servis Motor</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ff6b35">
+<link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/192/2971/2971170.png">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -212,9 +215,9 @@ function simpanMotor() {
   const data = getData();
   if (editId) {
     const idx = data.findIndex(x => x.id === editId);
-    if (idx >= 0) data[idx] = { ...data[idx], nama, plat, km, tanggal, interval };
+    if (idx >= 0) data[idx] = Object.assign({}, data[idx], { nama: nama, plat: plat, km: km, tanggal: tanggal, interval: interval });
   } else {
-    data.push({ id: Date.now().toString(), nama, plat, km, tanggal, interval, kmServisTerakhir: km });
+    data.push({ id: Date.now().toString(), nama: nama, plat: plat, km: km, tanggal: tanggal, interval: interval, kmServisTerakhir: km });
   }
   setData(data);
   tutupModal();
@@ -256,6 +259,16 @@ function formatTanggal(tgl) { return new Date(tgl).toLocaleDateString('id-ID', {
 function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
 render();
+
+// Register Service Worker untuk PWA
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(reg => console.log('Service Worker terdaftar!', reg))
+      .catch(err => console.log('Gagal daftar Service Worker:', err));
+  });
+}
 </script>
+
 </body>
-  </html>
+</html>

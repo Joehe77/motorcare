@@ -32,7 +32,6 @@
     padding: 16px;
     margin-bottom: 12px;
     border: 1px solid #2a2a4a;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   }
   .motor-title {
     display: flex;
@@ -42,7 +41,7 @@
     padding-bottom: 10px;
     border-bottom: 1px solid #2a2a4a;
   }
-  .motor-name { font-size: 18px; font-weight: bold; color: #fff; }
+  .motor-name { font-size: 18px; font-weight: bold; }
   .motor-plate {
     background: #ff6b35;
     color: white;
@@ -58,7 +57,7 @@
     padding: 8px 0;
   }
   .info-label { color: #999; }
-  .info-value { font-weight: bold; color: #fff; }
+  .info-value { font-weight: bold; }
   .highlight { color: #f7931e; }
   button {
     border: none;
@@ -66,9 +65,7 @@
     font-weight: bold;
     cursor: pointer;
     font-size: 14px;
-    transition: opacity 0.2s;
   }
-  button:active { opacity: 0.7; }
   .btn-primary {
     background: linear-gradient(90deg, #ff6b35, #f7931e);
     color: white;
@@ -81,6 +78,15 @@
   .btn-secondary {
     background: #2a2a4a;
     color: #eee;
+    padding: 14px;
+    width: 100%;
+    font-size: 15px;
+    margin-bottom: 8px;
+    border-radius: 12px;
+  }
+  .btn-action {
+    background: #2a2a4a;
+    color: #eee;
     padding: 10px 14px;
     flex: 1;
   }
@@ -90,11 +96,7 @@
     padding: 10px 14px;
     flex: 1;
   }
-  .actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 12px;
-  }
+  .actions { display: flex; gap: 8px; margin-top: 12px; }
   .empty {
     text-align: center;
     padding: 60px 20px;
@@ -122,11 +124,7 @@
     overflow-y: auto;
     border: 1px solid #2a2a4a;
   }
-  .modal h2 {
-    margin-bottom: 16px;
-    font-size: 20px;
-    color: #f7931e;
-  }
+  .modal h2 { margin-bottom: 16px; font-size: 20px; color: #f7931e; }
   label {
     display: block;
     font-size: 13px;
@@ -143,35 +141,74 @@
     color: #eee;
     font-size: 15px;
   }
-  input:focus {
-    outline: none;
-    border-color: #ff6b35;
-  }
-  .modal-actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 20px;
-  }
-  .modal-actions button {
-    flex: 1;
-    padding: 12px;
-  }
-  /* Panduan Interval Oli */
+  input:focus { outline: none; border-color: #ff6b35; }
+  .modal-actions { display: flex; gap: 8px; margin-top: 20px; }
+  .modal-actions button { flex: 1; padding: 12px; }
+  /* Panduan */
   .panduan-header {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
     gap: 12px;
   }
-  .panduan-header h2 {
-    font-size: 20px;
-    color: #f7931e;
-  }
+  .panduan-header h2 { font-size: 20px; color: #f7931e; }
   .btn-back {
     background: #2a2a4a;
     color: #eee;
     padding: 8px 14px;
     font-size: 14px;
+  }
+  .section-title {
+    font-size: 17px;
+    color: #f7931e;
+    margin: 20px 0 12px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .item-card {
+    background: #1a1a2e;
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 10px;
+    border-left: 4px solid #ff6b35;
+  }
+  .item-card.warn { border-left-color: #fbbf24; }
+  .item-name {
+    font-size: 15px;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+  .item-info {
+    font-size: 13px;
+    color: #bbb;
+    line-height: 1.5;
+  }
+  .item-badge {
+    display: inline-block;
+    background: #ff6b35;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+  .item-badge.warn {
+    background: #fbbf24;
+    color: #000;
+  }
+  .catatan {
+    background: #1a1a2e;
+    border-left: 4px solid #f7931e;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #aaa;
+    line-height: 1.5;
+    margin-top: 16px;
   }
   table {
     width: 100%;
@@ -195,15 +232,6 @@
     color: #ddd;
   }
   tr:last-child td { border-bottom: none; }
-  .catatan {
-    background: #1a1a2e;
-    border-left: 4px solid #f7931e;
-    padding: 12px 14px;
-    border-radius: 8px;
-    font-size: 13px;
-    color: #aaa;
-    line-height: 1.5;
-  }
 </style>
 </head>
 <body>
@@ -218,45 +246,105 @@
   <div id="list"></div>
 
   <button class="btn-primary" onclick="bukaTambah()">+ Tambah Motor</button>
-  <button class="btn-primary" style="background:#2a2a4a;" onclick="bukaPanduan()">📖 Panduan Interval Oli</button>
+  <button class="btn-secondary" onclick="bukaPanduanOli()">📖 Panduan Interval Oli</button>
+  <button class="btn-secondary" onclick="bukaPanduanPerawatan()">🔧 Panduan Perawatan Lengkap</button>
 </div>
 
-<!-- ============ HALAMAN PANDUAN ============ -->
-<div id="halaman-panduan" style="display:none;">
+<!-- ============ HALAMAN PANDUAN OLI ============ -->
+<div id="halaman-panduan-oli" style="display:none;">
   <div class="panduan-header">
-    <button class="btn-back" onclick="tutupPanduan()">← Kembali</button>
+    <button class="btn-back" onclick="tutupPanduanOli()">← Kembali</button>
     <h2>📖 Panduan Interval Oli</h2>
   </div>
-
   <table>
     <thead>
-      <tr>
-        <th>Jenis Oli</th>
-        <th>Interval Ideal</th>
-      </tr>
+      <tr><th>Jenis Oli</th><th>Interval Ideal</th></tr>
     </thead>
     <tbody>
-      <tr>
-        <td>Oli mineral (murah)</td>
-        <td>2.000 - 3.000 km</td>
-      </tr>
-      <tr>
-        <td>Oli semi-sintetik</td>
-        <td>3.000 - 4.000 km</td>
-      </tr>
-      <tr>
-        <td>Oli full sintetik</td>
-        <td>4.000 - 6.000 km</td>
-      </tr>
-      <tr>
-        <td>Oli premium (Motul, dll)</td>
-        <td>5.000 - 8.000 km</td>
-      </tr>
+      <tr><td>Oli mineral (murah)</td><td>2.000 - 3.000 km</td></tr>
+      <tr><td>Oli semi-sintetik</td><td>3.000 - 4.000 km</td></tr>
+      <tr><td>Oli full sintetik</td><td>4.000 - 6.000 km</td></tr>
+      <tr><td>Oli premium (Motul, dll)</td><td>5.000 - 8.000 km</td></tr>
     </tbody>
   </table>
-
   <div class="catatan">
     <strong>Catatan:</strong> Interval di atas hanya panduan umum. Sesuaikan dengan anjuran buku manual motor dan kondisi pemakaian.
+  </div>
+</div>
+
+<!-- ============ HALAMAN PANDUAN PERAWATAN ============ -->
+<div id="halaman-panduan-perawatan" style="display:none;">
+  <div class="panduan-header">
+    <button class="btn-back" onclick="tutupPanduanPerawatan()">← Kembali</button>
+    <h2>🔧 Panduan Perawatan</h2>
+  </div>
+
+  <div class="section-title">⚙️ Komponen Wajib Diganti Berkala</div>
+
+  <div class="item-card">
+    <div class="item-badge">GANTI</div>
+    <div class="item-name">🛢️ Oli Mesin</div>
+    <div class="item-info">Ganti setiap <strong>2.000–3.000 km</strong> atau <strong>1–2 bulan sekali</strong> untuk melumasi komponen internal mesin.</div>
+  </div>
+
+  <div class="item-card">
+    <div class="item-badge">GANTI</div>
+    <div class="item-name">⚙️ Oli Gardan (Transmisi)</div>
+    <div class="item-info">Ganti setiap <strong>2 kali penggantian oli mesin</strong> atau sekitar <strong>5.000–8.000 km</strong>.</div>
+  </div>
+
+  <div class="item-card">
+    <div class="item-badge">GANTI</div>
+    <div class="item-name">🌬️ Filter Udara</div>
+    <div class="item-info">Dibersihkan atau diganti setiap <strong>5.000–10.000 km</strong> agar aliran udara ke ruang bakar tetap bersih.</div>
+  </div>
+
+  <div class="item-card">
+    <div class="item-badge">GANTI</div>
+    <div class="item-name">⚡ Busi</div>
+    <div class="item-info">Dicek dan dibersihkan, lalu diganti jika sudah mencapai jarak <strong>10.000–15.000 km</strong>.</div>
+  </div>
+
+  <div class="item-card">
+    <div class="item-badge">GANTI</div>
+    <div class="item-name">🔗 V-Belt & Roller (CVT)</div>
+    <div class="item-info">Diperiksa kondisinya dari keausan atau retak, serta wajib diganti setiap <strong>20.000–25.000 km</strong>.</div>
+  </div>
+
+  <div class="section-title">🧽 Komponen Dicek & Dibersihkan</div>
+
+  <div class="item-card warn">
+    <div class="item-badge warn">CEK</div>
+    <div class="item-name">🔄 Area CVT</div>
+    <div class="item-info">Rumah CVT, mangkok kampas ganda, dan kotoran debu dibersihkan setiap <strong>6.000–8.000 km</strong> agar tarikan motor tidak bergetar atau berat.</div>
+  </div>
+
+  <div class="item-card warn">
+    <div class="item-badge warn">CEK</div>
+    <div class="item-name">🛑 Sistem Pengereman</div>
+    <div class="item-info">Ketebalan kampas rem depan dan belakang diperiksa, serta minyak rem dicek.</div>
+  </div>
+
+  <div class="item-card warn">
+    <div class="item-badge warn">CEK</div>
+    <div class="item-name">🔋 Aki & Kelistrikan</div>
+    <div class="item-info">Tegangan aki diperiksa, beserta fungsi lampu-lampu dan klakson.</div>
+  </div>
+
+  <div class="item-card warn">
+    <div class="item-badge warn">CEK</div>
+    <div class="item-name">🛞 Ban</div>
+    <div class="item-info">Tekanan angin dan keausan alur ban diperiksa demi keamanan berkendara.</div>
+  </div>
+
+  <div class="item-card warn">
+    <div class="item-badge warn">CEK</div>
+    <div class="item-name">⛽ Injeksi / Throttle Body</div>
+    <div class="item-info">Dibersihkan dari kerak agar suplai bahan bakar tetap lancar dan stasioner stabil.</div>
+  </div>
+
+  <div class="catatan">
+    <strong>Catatan:</strong> Jadwal di atas adalah panduan umum untuk motor matic 110-160cc. Sesuaikan dengan buku manual motor kau dan kondisi pemakaian harian.
   </div>
 </div>
 
@@ -265,21 +353,16 @@
   <div class="modal-content">
     <h2 id="modal-title">Tambah Motor</h2>
     <input type="hidden" id="edit-id">
-
     <label>Nama Motor</label>
     <input id="f-nama" placeholder="Contoh: Honda Vario" autocomplete="off">
-
     <label>Plat Nomor</label>
     <input id="f-plat" placeholder="Contoh: B 1234 XYZ" style="text-transform:uppercase" autocomplete="off">
-
     <label>KM Sekarang</label>
     <input id="f-km" type="number" placeholder="Contoh: 2450" inputmode="numeric">
-
     <label>Interval Oli (km)</label>
     <input id="f-interval" type="number" value="3000" inputmode="numeric">
-
     <div class="modal-actions">
-      <button class="btn-secondary" onclick="tutupModal()">Batal</button>
+      <button class="btn-secondary" style="margin:0;" onclick="tutupModal()">Batal</button>
       <button class="btn-primary" style="margin:0;" onclick="simpanMotor()">Simpan</button>
     </div>
   </div>
@@ -288,12 +371,8 @@
 <script>
 const STORAGE_KEY = 'motorcare_data';
 
-function getData() {
-  return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-}
-function setData(d) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
-}
+function getData() { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+function setData(d) { localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); }
 
 function render() {
   const data = getData();
@@ -323,7 +402,7 @@ function render() {
         '<span class="info-value highlight">' + formatAngka(nextOil) + ' km</span>' +
       '</div>' +
       '<div class="actions">' +
-        '<button class="btn-secondary" onclick="editMotor(\'' + m.id + '\')">Edit</button>' +
+        '<button class="btn-action" onclick="editMotor(\'' + m.id + '\')">Edit</button>' +
         '<button class="btn-danger" onclick="hapusMotor(\'' + m.id + '\')">Hapus</button>' +
       '</div>' +
     '</div>';
@@ -340,9 +419,7 @@ function bukaTambah() {
   document.getElementById('modal').classList.add('active');
 }
 
-function tutupModal() {
-  document.getElementById('modal').classList.remove('active');
-}
+function tutupModal() { document.getElementById('modal').classList.remove('active'); }
 
 function simpanMotor() {
   const nama = document.getElementById('f-nama').value.trim();
@@ -351,13 +428,9 @@ function simpanMotor() {
   const interval = document.getElementById('f-interval').value || 3000;
   const editId = document.getElementById('edit-id').value;
 
-  if (!nama || !plat || !km) {
-    alert('Isi Nama, Plat, dan KM dulu ya!');
-    return;
-  }
+  if (!nama || !plat || !km) { alert('Isi Nama, Plat, dan KM dulu ya!'); return; }
 
   const data = getData();
-
   if (editId) {
     const idx = data.findIndex(function(x) { return x.id === editId; });
     if (idx >= 0) {
@@ -367,15 +440,8 @@ function simpanMotor() {
       data[idx].interval = interval;
     }
   } else {
-    data.push({
-      id: Date.now().toString(),
-      nama: nama,
-      plat: plat,
-      km: km,
-      interval: interval
-    });
+    data.push({ id: Date.now().toString(), nama: nama, plat: plat, km: km, interval: interval });
   }
-
   setData(data);
   tutupModal();
   render();
@@ -384,7 +450,6 @@ function simpanMotor() {
 function editMotor(id) {
   const m = getData().find(function(x) { return x.id === id; });
   if (!m) return;
-
   document.getElementById('modal-title').textContent = 'Edit Motor';
   document.getElementById('edit-id').value = m.id;
   document.getElementById('f-nama').value = m.nama;
@@ -396,27 +461,33 @@ function editMotor(id) {
 
 function hapusMotor(id) {
   if (!confirm('Yakin hapus motor ini?')) return;
-  const data = getData().filter(function(x) { return x.id !== id; });
-  setData(data);
+  setData(getData().filter(function(x) { return x.id !== id; }));
   render();
 }
 
-function bukaPanduan() {
+function bukaPanduanOli() {
   document.getElementById('halaman-utama').style.display = 'none';
-  document.getElementById('halaman-panduan').style.display = 'block';
+  document.getElementById('halaman-panduan-oli').style.display = 'block';
   window.scrollTo(0, 0);
 }
-
-function tutupPanduan() {
-  document.getElementById('halaman-panduan').style.display = 'none';
+function tutupPanduanOli() {
+  document.getElementById('halaman-panduan-oli').style.display = 'none';
   document.getElementById('halaman-utama').style.display = 'block';
   window.scrollTo(0, 0);
 }
 
-function formatAngka(n) {
-  return (parseInt(n) || 0).toLocaleString('id-ID');
+function bukaPanduanPerawatan() {
+  document.getElementById('halaman-utama').style.display = 'none';
+  document.getElementById('halaman-panduan-perawatan').style.display = 'block';
+  window.scrollTo(0, 0);
+}
+function tutupPanduanPerawatan() {
+  document.getElementById('halaman-panduan-perawatan').style.display = 'none';
+  document.getElementById('halaman-utama').style.display = 'block';
+  window.scrollTo(0, 0);
 }
 
+function formatAngka(n) { return (parseInt(n) || 0).toLocaleString('id-ID'); }
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, function(c) {
     return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
@@ -425,12 +496,11 @@ function escapeHtml(s) {
 
 render();
 
-// Register Service Worker (PWA)
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
     navigator.serviceWorker.register('service-worker.js')
-      .then(function(reg) { console.log('Service Worker OK:', reg); })
-      .catch(function(err) { console.log('Service Worker gagal:', err); });
+      .then(function(reg) { console.log('SW OK'); })
+      .catch(function(err) { console.log('SW gagal:', err); });
   });
 }
 </script>

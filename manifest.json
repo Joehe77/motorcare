@@ -1,0 +1,23 @@
+{
+  "name": "MotorCare - Pengingat Servis Motor",
+  "short_name": "MotorCare",
+  "description": "Aplikasi pengingat servis motor kau",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f0f1a",
+  "theme_color": "#ff6b35",
+  "lang": "id",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/192/2971/2971170.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2971/2971170.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

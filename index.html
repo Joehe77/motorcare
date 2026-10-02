@@ -6,23 +6,24 @@
 <title>MotorCare - Pengingat Servis Motor</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#ff6b35">
-<link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/192/2971/2971170.png">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    font-family: -apple-system, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     background: #0f0f1a;
     color: #eee;
     padding: 16px;
     padding-bottom: 80px;
+    min-height: 100vh;
   }
   header { text-align: center; margin-bottom: 20px; }
   header h1 {
-    font-size: 24px;
+    font-size: 26px;
     background: linear-gradient(90deg, #ff6b35, #f7931e);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    font-weight: 800;
   }
   header p { color: #888; font-size: 13px; margin-top: 4px; }
   .card {
@@ -31,14 +32,17 @@
     padding: 16px;
     margin-bottom: 12px;
     border: 1px solid #2a2a4a;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   }
   .motor-title {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #2a2a4a;
   }
-  .motor-name { font-size: 18px; font-weight: bold; }
+  .motor-name { font-size: 18px; font-weight: bold; color: #fff; }
   .motor-plate {
     background: #ff6b35;
     color: white;
@@ -50,44 +54,62 @@
   .info-row {
     display: flex;
     justify-content: space-between;
-    font-size: 13px;
-    padding: 6px 0;
-    border-bottom: 1px solid #2a2a4a;
+    font-size: 14px;
+    padding: 8px 0;
   }
-  .info-row:last-child { border: none; }
-  .info-label { color: #888; }
-  .info-value { font-weight: bold; }
-  .status-ok { color: #4ade80; }
-  .status-warn { color: #fbbf24; }
-  .status-danger { color: #ef4444; }
+  .info-label { color: #999; }
+  .info-value { font-weight: bold; color: #fff; }
+  .highlight { color: #f7931e; }
   button {
-    width: 100%;
-    padding: 14px;
     border: none;
-    border-radius: 12px;
-    font-size: 15px;
+    border-radius: 10px;
     font-weight: bold;
     cursor: pointer;
-    margin-top: 8px;
+    font-size: 14px;
+    transition: opacity 0.2s;
   }
+  button:active { opacity: 0.7; }
   .btn-primary {
     background: linear-gradient(90deg, #ff6b35, #f7931e);
     color: white;
+    padding: 14px;
+    width: 100%;
+    font-size: 15px;
+    margin-bottom: 8px;
+    border-radius: 12px;
   }
-  .btn-secondary { background: #2a2a4a; color: #eee; }
-  .btn-small { width: auto; padding: 8px 14px; font-size: 12px; margin: 0; }
-  .btn-danger { background: #7f1d1d; color: #fca5a5; }
-  .empty { text-align: center; padding: 60px 20px; color: #666; }
+  .btn-secondary {
+    background: #2a2a4a;
+    color: #eee;
+    padding: 10px 14px;
+    flex: 1;
+  }
+  .btn-danger {
+    background: #7f1d1d;
+    color: #fca5a5;
+    padding: 10px 14px;
+    flex: 1;
+  }
+  .actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
+  }
   .empty-icon { font-size: 60px; margin-bottom: 12px; }
   .modal {
     display: none;
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.8);
+    background: rgba(0,0,0,0.85);
     z-index: 100;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 16px;
   }
   .modal.active { display: flex; }
   .modal-content {
@@ -95,19 +117,24 @@
     border-radius: 16px;
     padding: 20px;
     width: 100%;
-    max-width: 400px;
+    max-width: 420px;
     max-height: 90vh;
     overflow-y: auto;
+    border: 1px solid #2a2a4a;
   }
-  .modal h2 { margin-bottom: 16px; font-size: 20px; }
+  .modal h2 {
+    margin-bottom: 16px;
+    font-size: 20px;
+    color: #f7931e;
+  }
   label {
     display: block;
     font-size: 13px;
     color: #aaa;
     margin-top: 12px;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
   }
-  input, select {
+  input {
     width: 100%;
     padding: 12px;
     background: #0f0f1a;
@@ -116,79 +143,190 @@
     color: #eee;
     font-size: 15px;
   }
-  .actions { display: flex; gap: 8px; margin-top: 16px; }
-  .actions button { margin: 0; }
+  input:focus {
+    outline: none;
+    border-color: #ff6b35;
+  }
+  .modal-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 20px;
+  }
+  .modal-actions button {
+    flex: 1;
+    padding: 12px;
+  }
+  /* Panduan Interval Oli */
+  .panduan-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 12px;
+  }
+  .panduan-header h2 {
+    font-size: 20px;
+    color: #f7931e;
+  }
+  .btn-back {
+    background: #2a2a4a;
+    color: #eee;
+    padding: 8px 14px;
+    font-size: 14px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 16px;
+    background: #1a1a2e;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  th {
+    background: #ff6b35;
+    color: white;
+    padding: 12px;
+    text-align: left;
+    font-size: 14px;
+  }
+  td {
+    padding: 12px;
+    border-bottom: 1px solid #2a2a4a;
+    font-size: 13px;
+    color: #ddd;
+  }
+  tr:last-child td { border-bottom: none; }
+  .catatan {
+    background: #1a1a2e;
+    border-left: 4px solid #f7931e;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #aaa;
+    line-height: 1.5;
+  }
 </style>
 </head>
 <body>
 
-<header>
-  <h1>🏍️ MotorCare</h1>
-  <p>Pengingat Servis Motor Kau</p>
-</header>
+<!-- ============ HALAMAN UTAMA ============ -->
+<div id="halaman-utama">
+  <header>
+    <h1>🏍️ MotorCare</h1>
+    <p>Pengingat Servis Motor Kau</p>
+  </header>
 
-<div id="list"></div>
+  <div id="list"></div>
 
-<button class="btn-primary" onclick="bukaTambah()">+ Tambah Motor</button>
+  <button class="btn-primary" onclick="bukaTambah()">+ Tambah Motor</button>
+  <button class="btn-primary" style="background:#2a2a4a;" onclick="bukaPanduan()">📖 Panduan Interval Oli</button>
+</div>
 
+<!-- ============ HALAMAN PANDUAN ============ -->
+<div id="halaman-panduan" style="display:none;">
+  <div class="panduan-header">
+    <button class="btn-back" onclick="tutupPanduan()">← Kembali</button>
+    <h2>📖 Panduan Interval Oli</h2>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Jenis Oli</th>
+        <th>Interval Ideal</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Oli mineral (murah)</td>
+        <td>2.000 - 3.000 km</td>
+      </tr>
+      <tr>
+        <td>Oli semi-sintetik</td>
+        <td>3.000 - 4.000 km</td>
+      </tr>
+      <tr>
+        <td>Oli full sintetik</td>
+        <td>4.000 - 6.000 km</td>
+      </tr>
+      <tr>
+        <td>Oli premium (Motul, dll)</td>
+        <td>5.000 - 8.000 km</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="catatan">
+    <strong>Catatan:</strong> Interval di atas hanya panduan umum. Sesuaikan dengan anjuran buku manual motor dan kondisi pemakaian.
+  </div>
+</div>
+
+<!-- ============ MODAL TAMBAH/EDIT MOTOR ============ -->
 <div class="modal" id="modal">
   <div class="modal-content">
     <h2 id="modal-title">Tambah Motor</h2>
     <input type="hidden" id="edit-id">
+
     <label>Nama Motor</label>
-    <input id="f-nama" placeholder="Contoh: Honda Vario">
+    <input id="f-nama" placeholder="Contoh: Honda Vario" autocomplete="off">
+
     <label>Plat Nomor</label>
-    <input id="f-plat" placeholder="Contoh: B 1234 XYZ" style="text-transform:uppercase">
-    <label>Kilometer Sekarang</label>
-    <input id="f-km" type="number" placeholder="Contoh: 12000">
-    <label>Tanggal Servis Terakhir</label>
-    <input id="f-tanggal" type="date">
-    <label>Jarak Ganti Oli (km)</label>
-    <input id="f-interval" type="number" value="3000">
-    <div class="actions">
+    <input id="f-plat" placeholder="Contoh: B 1234 XYZ" style="text-transform:uppercase" autocomplete="off">
+
+    <label>KM Sekarang</label>
+    <input id="f-km" type="number" placeholder="Contoh: 2450" inputmode="numeric">
+
+    <label>Interval Oli (km)</label>
+    <input id="f-interval" type="number" value="3000" inputmode="numeric">
+
+    <div class="modal-actions">
       <button class="btn-secondary" onclick="tutupModal()">Batal</button>
-      <button class="btn-primary" onclick="simpanMotor()">Simpan</button>
+      <button class="btn-primary" style="margin:0;" onclick="simpanMotor()">Simpan</button>
     </div>
   </div>
 </div>
 
 <script>
 const STORAGE_KEY = 'motorcare_data';
-function getData() { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
-function setData(d) { localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); }
 
-function hitungStatus(m) {
-  const kmSekarang = parseInt(m.km) || 0;
-  const interval = parseInt(m.interval) || 3000;
-  const kmServisTerakhir = parseInt(m.kmServisTerakhir) || 0;
-  const kmSejakServis = kmSekarang - kmServisTerakhir;
-  const sisaKm = interval - kmSejakServis;
-  if (sisaKm <= 0) return { status: 'danger', pesan: '⚠️ GANTI OLI SEKARANG!' };
-  if (sisaKm < 500) return { status: 'warn', pesan: '🔔 Segera ganti oli (' + sisaKm + ' km lagi)' };
-  return { status: 'ok', pesan: '✅ Aman (' + sisaKm + ' km lagi)' };
+function getData() {
+  return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+}
+function setData(d) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
 }
 
 function render() {
   const data = getData();
   const list = document.getElementById('list');
+
   if (data.length === 0) {
     list.innerHTML = '<div class="empty"><div class="empty-icon">🏍️</div><p>Belum ada motor.<br>Tambahkan motor pertama kau!</p></div>';
     return;
   }
-  list.innerHTML = data.map(m => {
-    const st = hitungStatus(m);
-    const kmSejak = (parseInt(m.km) || 0) - (parseInt(m.kmServisTerakhir) || 0);
+
+  list.innerHTML = data.map(function(m) {
+    const km = parseInt(m.km) || 0;
+    const interval = parseInt(m.interval) || 3000;
+    const nextOil = km + interval;
+
     return '<div class="card">' +
-      '<div class="motor-title"><span class="motor-name">' + escapeHtml(m.nama) + '</span><span class="motor-plate">' + escapeHtml(m.plat) + '</span></div>' +
-      '<div class="info-row"><span class="info-label">Kilometer</span><span class="info-value">' + formatAngka(m.km) + ' km</span></div>' +
-      '<div class="info-row"><span class="info-label">Servis terakhir</span><span class="info-value">' + formatTanggal(m.tanggal) + '</span></div>' +
-      '<div class="info-row"><span class="info-label">Sejak servis</span><span class="info-value">' + formatAngka(kmSejak) + ' km</span></div>' +
-      '<div class="info-row"><span class="info-label">Status</span><span class="info-value status-' + st.status + '">' + st.pesan + '</span></div>' +
+      '<div class="motor-title">' +
+        '<span class="motor-name">' + escapeHtml(m.nama) + '</span>' +
+        '<span class="motor-plate">' + escapeHtml(m.plat) + '</span>' +
+      '</div>' +
+      '<div class="info-row">' +
+        '<span class="info-label">KM Sekarang</span>' +
+        '<span class="info-value">' + formatAngka(km) + ' km</span>' +
+      '</div>' +
+      '<div class="info-row">' +
+        '<span class="info-label">Ganti Oli Selanjutnya</span>' +
+        '<span class="info-value highlight">' + formatAngka(nextOil) + ' km</span>' +
+      '</div>' +
       '<div class="actions">' +
-        '<button class="btn-secondary btn-small" onclick="servisSekarang(\'' + m.id + '\')">Sudah Servis</button>' +
-        '<button class="btn-secondary btn-small" onclick="editMotor(\'' + m.id + '\')">Edit</button>' +
-        '<button class="btn-danger btn-small" onclick="hapusMotor(\'' + m.id + '\')">Hapus</button>' +
-      '</div></div>';
+        '<button class="btn-secondary" onclick="editMotor(\'' + m.id + '\')">Edit</button>' +
+        '<button class="btn-danger" onclick="hapusMotor(\'' + m.id + '\')">Hapus</button>' +
+      '</div>' +
+    '</div>';
   }).join('');
 }
 
@@ -198,74 +336,101 @@ function bukaTambah() {
   document.getElementById('f-nama').value = '';
   document.getElementById('f-plat').value = '';
   document.getElementById('f-km').value = '';
-  document.getElementById('f-tanggal').value = new Date().toISOString().split('T')[0];
   document.getElementById('f-interval').value = 3000;
   document.getElementById('modal').classList.add('active');
 }
-function tutupModal() { document.getElementById('modal').classList.remove('active'); }
+
+function tutupModal() {
+  document.getElementById('modal').classList.remove('active');
+}
 
 function simpanMotor() {
   const nama = document.getElementById('f-nama').value.trim();
   const plat = document.getElementById('f-plat').value.trim().toUpperCase();
   const km = document.getElementById('f-km').value;
-  const tanggal = document.getElementById('f-tanggal').value;
   const interval = document.getElementById('f-interval').value || 3000;
   const editId = document.getElementById('edit-id').value;
-  if (!nama || !plat || !km || !tanggal) { alert('Isi semua kolom dulu ya!'); return; }
-  const data = getData();
-  if (editId) {
-    const idx = data.findIndex(x => x.id === editId);
-    if (idx >= 0) data[idx] = Object.assign({}, data[idx], { nama: nama, plat: plat, km: km, tanggal: tanggal, interval: interval });
-  } else {
-    data.push({ id: Date.now().toString(), nama: nama, plat: plat, km: km, tanggal: tanggal, interval: interval, kmServisTerakhir: km });
+
+  if (!nama || !plat || !km) {
+    alert('Isi Nama, Plat, dan KM dulu ya!');
+    return;
   }
+
+  const data = getData();
+
+  if (editId) {
+    const idx = data.findIndex(function(x) { return x.id === editId; });
+    if (idx >= 0) {
+      data[idx].nama = nama;
+      data[idx].plat = plat;
+      data[idx].km = km;
+      data[idx].interval = interval;
+    }
+  } else {
+    data.push({
+      id: Date.now().toString(),
+      nama: nama,
+      plat: plat,
+      km: km,
+      interval: interval
+    });
+  }
+
   setData(data);
   tutupModal();
   render();
 }
 
 function editMotor(id) {
-  const m = getData().find(x => x.id === id);
+  const m = getData().find(function(x) { return x.id === id; });
   if (!m) return;
+
   document.getElementById('modal-title').textContent = 'Edit Motor';
   document.getElementById('edit-id').value = m.id;
   document.getElementById('f-nama').value = m.nama;
   document.getElementById('f-plat').value = m.plat;
   document.getElementById('f-km').value = m.km;
-  document.getElementById('f-tanggal').value = m.tanggal;
   document.getElementById('f-interval').value = m.interval || 3000;
   document.getElementById('modal').classList.add('active');
 }
 
 function hapusMotor(id) {
   if (!confirm('Yakin hapus motor ini?')) return;
-  setData(getData().filter(x => x.id !== id));
-  render();
-}
-
-function servisSekarang(id) {
-  const data = getData();
-  const idx = data.findIndex(x => x.id === id);
-  if (idx < 0) return;
-  if (!confirm('Tandai motor ini sudah servis hari ini?')) return;
-  data[idx].kmServisTerakhir = data[idx].km;
-  data[idx].tanggal = new Date().toISOString().split('T')[0];
+  const data = getData().filter(function(x) { return x.id !== id; });
   setData(data);
   render();
 }
 
-function formatAngka(n) { return (parseInt(n) || 0).toLocaleString('id-ID'); }
-function formatTanggal(tgl) { return new Date(tgl).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }); }
-function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function bukaPanduan() {
+  document.getElementById('halaman-utama').style.display = 'none';
+  document.getElementById('halaman-panduan').style.display = 'block';
+  window.scrollTo(0, 0);
+}
+
+function tutupPanduan() {
+  document.getElementById('halaman-panduan').style.display = 'none';
+  document.getElementById('halaman-utama').style.display = 'block';
+  window.scrollTo(0, 0);
+}
+
+function formatAngka(n) {
+  return (parseInt(n) || 0).toLocaleString('id-ID');
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, function(c) {
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
 
 render();
 
-// Register Service Worker untuk PWA
+// Register Service Worker (PWA)
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
+  window.addEventListener('load', function() {
     navigator.serviceWorker.register('service-worker.js')
-      .then(reg => console.log('Service Worker terdaftar!', reg))
-      .catch(err => console.log('Gagal daftar Service Worker:', err));
+      .then(function(reg) { console.log('Service Worker OK:', reg); })
+      .catch(function(err) { console.log('Service Worker gagal:', err); });
   });
 }
 </script>
